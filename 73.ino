@@ -1,4 +1,4 @@
-#include <ATX2.h>
+#include <ATX2.h>            //ห้ามลบไม่งั้นใช้ไม่ได้
 void (*resetFunc)(void) = 0; // ประกาศฟังก์ชัน reset
 
 float pvYaw = 0;           // ค่า Yaw ดิบจากเซนเซอร์ (-180 ถึง +180)
