@@ -48,7 +48,7 @@ void setup() {
   Serial.begin(9600);
   Serial1.begin(115200);   // เริ่มต้น Serial1 สำหรับคุยกับ IMU
   glcd(0, 0, "Ready Go!"); // ขึ้นหน้าจอว่าพร้อมใช้งาน
-  servo(2, 55);            // รีเซ้ตค่าที่ปัดลูกบาศเป็นค่าเริ่มต้น
+  servo(1, 55);            // รีเซ้ตค่าที่ปัดลูกบาศเป็นค่าเริ่มต้น
   // showSensorValues(true); // วัดค่าแสง
   OK();
   beep();     // ส่งเสียงบี๊บยืนยันการกด
@@ -56,36 +56,49 @@ void setup() {
   zeroYaw();
   resetContinuousYaw(); // รีเซ็ต pvYawContinuous เป็น 0
 
+  FdTimeG(50, 50, 1000, 1, false, false);
+
   // --- ใช้งานโค้ดส่วนด้านล่างนี้ ---
 
-  FdTime(100, 100, 100, 0);
-  FdUntilLineG(30, 30, 1);
-  FdTimeG(-30, -30, 300, 1);
-  delay(100);
-  trg(50, 50, 90, 0.70, 30, 30); // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
-                                 // ค่าเปอร์เซ็นต์, ความเร็วชะลอ,ความเร็วแก้ไขเลี้ยวเกิน
-  FdTime(70, 70, 100, 0);
-  FdUntilLineG(30, 30, 1);
-  FdTimeG(-30, -30, 500, 1, false, false);
-  servoDrop(160, 500, 55);
-  FdTimeG(-30, -30, 800, 1, false, false);
-  trg(50, 50, 90, 0.70, 30, 30); // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
-                                 // ค่าเปอร์เซ็นต์, ความเร็วชะลอ,ความเร็วแก้ไขเลี้ยวเกิน
-  FdTime(70, 70, 100, 0);
-  FdUntilLineG(30, 30, 1);
-  delay(50);
-  FdTimeG(-30, -30, 300, 1, false, false);
-  delay(100);
-  tlg(70, 70, 90, 0.75, 30, 30); // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
-                                 // ค่าเปอร์เซ็นต์, ความเร็วชะลอ,ความเร็วแก้ไขเลี้ยวเกิน
-  FdTimeG(50, 50, 600, 1);
-  trg(50, 50, 90, 0.70, 30, 30); // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
-                                 // ค่าเปอร์เซ็นต์, ความเร็วชะลอ,ความเร็วแก้ไขเลี้ยวเกิน
-  FdTime(100, 100, 100, 0);
-  FdUntilLineG(30, 30, 1);
-  FdTimeG(-30, -30, 300, 1, false, false);
-  trg(50, 50, 90, 0.70, 30, 30); // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
-  FdUntilLineG(30, 30, 1);
+  // FdTime(70, 70, 100, 0);
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-30, -30, 300, 1);
+  // delay(100);
+  // tlg(70, 70, 90, 0.70, 30, 30);  // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
+  //                                 // ค่าเปอร์เซ็นต์,
+  //                                 ความเร็วชะลอ,ความเร็วแก้ไขเลี้ยวเกิน
+  // FdTimeG(70, 70, 400, 0);
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-30, -30, 300, 1, false, false);
+  // tlg(70, 70, 90, 0.70, 30, 30);  // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
+  //                                 // ค่าเปอร์เซ็นต์,
+  //                                 ความเร็วชะลอ,ความเร็วแก้ไขเลี้ยวเกิน
+  // FdTime(70, 70, 100, 0);
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-30, -30, 300, 1);
+  // delay(100);
+  // tlg(70, 70, 90, 0.70, 30, 30);  // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
+  //                                 // ค่าเปอร์เซ็นต์,
+  //                                 ความเร็วชะลอ,ความเร็วแก้ไขเลี้ยวเกิน
+
+  // FdTimeG(70, 70, 100, 0, false, false);
+  // FdUntilLineG(30, 30, 1);
+  // delay(100);
+  // servoDrop(160, 300, 55);
+  // FdTimeG(-30, -30, 150, 0, false, false);
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-45, -45, 500, 1, false, false);
+  // tlg(70, 70, 90, 0.70, 30, 30);  // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
+  //                                 // ค่าเปอร์เซ็นต์,
+  //                                 ความเร็วชะลอ,ความเร็วแก้ไขเลี้ยวเกิน
+  // FdTime(70, 70, 250, 0);
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-30, -30, 300, 1);
+  // delay(100);
+  // trg(70, 70, 90, 0.70, 30, 30);  // ความเร็วซ้าย, ความเร็วขวา, องศาที่ต้องการไป,
+  //                                 // ค่าเปอร์เซ็นต์,
+  //                                 ความเร็วชะลอ,ความเร็วแก้ไขเลี้ยวเกิน
+  // FdTimeG(70, 70, 800, 1, false, false);
 
   // FdTime(28, 33, 1000, 0);
   // FdUntilLine(28, 33, 1);
@@ -136,6 +149,7 @@ void setup() {
    - "ซ้าย, ขวา" -> คือความเร็วมอเตอร์ (แนะนำที่ 30 ถึง 80)
   ========================================================================
   */
+  delay(300);
 }
 
 void loop() {
@@ -181,9 +195,9 @@ void FdTime(int sl, int sr, int time, int sp, bool checkSen0, bool checkSen3) {
 // --- ฟังก์ชันปัดแขนเซอร์โว ---
 // openAngle = องศาตอนปัดออก, delayTime = เวลารอ, closeAngle = องศาตอนหุบกลับ
 void servoDrop(int openAngle, int delayTime, int closeAngle) {
-  servo(2, openAngle); // สั่งเซอร์โวช่อง 2
+  servo(1, openAngle); // สั่งเซอร์โวช่อง 2
   delay(delayTime);
-  servo(2, closeAngle);
+  servo(1, closeAngle);
 }
 
 // --- ฟังก์ชันเลี้ยวซ้าย (ตามเวลา) ---
@@ -532,19 +546,19 @@ void FdUntilLineG(int sl, int sr, int sp) {
 void tlg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
          int correctSpeed) {
 
-  glcd(0, 0, "Waiting IMU...");
+  // glcd(0, 0, "Waiting IMU...");
 
   // รอจนกว่าจะได้ค่าจาก IMU จริงๆ (รอ return true)
   unsigned long waitStart = millis();
   while (!getIMU()) {
     if (millis() - waitStart > 1000) { // timeout 1 วินาที
-      glcd(0, 0, "IMU Timeout!  ");
-      delay(500);
+      // glcd(0, 0, "IMU Timeout!  ");
+      // delay(500);
       break;
     }
     delay(10);
   }
-  delay(100);
+  delay(10); // Reduced from 100
 
   // รีเซ็ต Continuous Yaw เป็น 0
   resetContinuousYaw();
@@ -558,9 +572,9 @@ void tlg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
   }
 
   // แสดงผลเริ่มต้น (ใช้ %d.%d แทน %f)
-  glcd(0, 0, "Start: %d.%d   ", (int)pvYawContinuous,
-       abs((int)(pvYawContinuous * 10) % 10));
-  delay(200);
+  // glcd(0, 0, "Start: %d.%d   ", (int)pvYawContinuous,
+  //      abs((int)(pvYawContinuous * 10) % 10));
+  // delay(200); // Removed
 
   float absTarget = abs(targetAngle);
   float slowThreshold = absTarget * slowPct; // มุมที่เริ่มชะลอ
@@ -588,14 +602,14 @@ void tlg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
     // ถ้าถึงเป้าหมายแล้ว ออกจาก loop
     if (pvYawContinuous >= absTarget) {
       motor_stop(ALL); // สั่งหยุดทันทีก่อนแสดงผล
-      glcd(1, 0, "REACHED!      ");
+      // glcd(1, 0, "REACHED!      ");
       break;
     }
 
     // timeout ป้องกันหมุนไม่หยุด
     if (millis() - startTime > timeout) {
       motor_stop(ALL);
-      glcd(1, 0, "TIMEOUT!      ");
+      // glcd(1, 0, "TIMEOUT!      ");
       break;
     }
 
@@ -619,7 +633,7 @@ void tlg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
   motor_stop(ALL); // ย้ำหยุดอีกครั้ง
 
   // แก้ไขการเลี้ยวเกิน (overshoot correction)
-  delay(100);
+  delay(10); // Reduced from 100
   startTime = millis();
   while (millis() - startTime < 2000) { // แก้ไขไม่เกิน 2 วินาที
     if (getIMU()) {
@@ -645,8 +659,8 @@ void tlg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
   motor_stop(ALL);
 
   // แสดงผลค่าสุดท้าย
-  glcd(0, 0, "Done: %d.%d    ", (int)pvYawContinuous,
-       abs((int)(pvYawContinuous * 10) % 10));
+  // glcd(0, 0, "Done: %d.%d    ", (int)pvYawContinuous,
+  //      abs((int)(pvYawContinuous * 10) % 10));
 }
 
 // tlg แบบ default parameters (สำหรับเรียกใช้แบบง่าย)
@@ -665,19 +679,19 @@ void tlg(int sl, int sr, float targetAngle) {
 void trg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
          int correctSpeed) {
 
-  glcd(0, 0, "Waiting IMU...");
+  // glcd(0, 0, "Waiting IMU...");
 
   // รอจนกว่าจะได้ค่าจาก IMU จริงๆ (รอ return true)
   unsigned long waitStart = millis();
   while (!getIMU()) {
     if (millis() - waitStart > 1000) { // timeout 1 วินาที
-      glcd(0, 0, "IMU Timeout!  ");
-      delay(500);
+      // glcd(0, 0, "IMU Timeout!  ");
+      // delay(500);
       break;
     }
     delay(10);
   }
-  delay(100);
+  delay(10); // Reduced from 100
 
   // รีเซ็ต Continuous Yaw เป็น 0
   resetContinuousYaw();
@@ -691,9 +705,9 @@ void trg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
   }
 
   // ใช้ %d.%d แทน %.1f
-  glcd(0, 0, "Start: %d.%d   ", (int)pvYawContinuous,
-       abs((int)(pvYawContinuous * 10) % 10));
-  delay(200);
+  // glcd(0, 0, "Start: %d.%d   ", (int)pvYawContinuous,
+  //      abs((int)(pvYawContinuous * 10) % 10));
+  // delay(200); // Removed
 
   float absTarget = abs(targetAngle);
   float slowThreshold = absTarget * slowPct; // มุมที่เริ่มชะลอ
@@ -713,21 +727,21 @@ void trg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
     // *** COMMENT OUT เพื่อความเร็วสูงสุด ***
     // if (millis() - lastDispTime > 150) {
     //   lastDispTime = millis();
-    //   glcd(0, 0, "CYaw=%d.%d T=%d", (int)pvYawContinuous,
-    //   abs((int)(pvYawContinuous*10)%10), -(int)absTarget);
+    //   // glcd(0, 0, "CYaw=%d.%d T=%d", (int)pvYawContinuous,
+    //   // abs((int)(pvYawContinuous*10)%10), -(int)absTarget);
     // }
 
     // ถ้าถึงเป้าหมายแล้ว ออกจาก loop (ค่าลบ)
     if (pvYawContinuous <= -absTarget) {
       motor_stop(ALL);
-      glcd(1, 0, "REACHED!      ");
+      // glcd(1, 0, "REACHED!      ");
       break;
     }
 
     // timeout ป้องกันหมุนไม่หยุด
     if (millis() - startTime > timeout) {
       motor_stop(ALL);
-      glcd(1, 0, "TIMEOUT!      ");
+      // glcd(1, 0, "TIMEOUT!      ");
       break;
     }
 
@@ -751,7 +765,7 @@ void trg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
   motor_stop(ALL);
 
   // แก้ไขการเลี้ยวเกิน (overshoot correction)
-  delay(100);
+  delay(10); // Reduced from 100
   startTime = millis();
   while (millis() - startTime < 2000) { // แก้ไขไม่เกิน 2 วินาที
     if (getIMU()) {
@@ -762,8 +776,8 @@ void trg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
       // *** COMMENT OUT เพื่อความเร็วสูงสุด ***
       // if (millis() - lastDispTime > 150) {
       //   lastDispTime = millis();
-      //   glcd(0, 0, "FIX: %d.%d     ", (int)pvYawContinuous,
-      //   abs((int)(pvYawContinuous*10)%10));
+      //   // glcd(0, 0, "FIX: %d.%d     ", (int)pvYawContinuous,
+      //   // abs((int)(pvYawContinuous*10)%10));
       // }
 
       // หมุนกลับ (ไปซ้าย) ช้าๆ
@@ -774,8 +788,8 @@ void trg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
     }
   }
   motor_stop(ALL);
-  glcd(0, 0, "Done: %d.%d    ", (int)pvYawContinuous,
-       abs((int)(pvYawContinuous * 10) % 10));
+  // glcd(0, 0, "Done: %d.%d    ", (int)pvYawContinuous,
+  //      abs((int)(pvYawContinuous * 10) % 10));
 }
 
 // trg แบบ default parameters (สำหรับเรียกใช้แบบง่าย)
