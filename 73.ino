@@ -241,14 +241,14 @@ void FdTime(int sl, int sr, int time, int sp, bool checkSen0, bool checkSen3) {
       motor(2, -30);
       motor(3, 30);
       motor(4, 30);
-      delay(150);
+      delay(100);
     } else if (checkSen0 && s0 < ref0) {
       // ถ้า a0 เจอ เลี่ยงไปด้านซ้าย
       motor(1, 30);
       motor(2, 30);
       motor(3, -30);
       motor(4, -30);
-      delay(150);
+      delay(100);
     } else {
       // วิ่งตรงตามปกติ
       motor(1, sr);
