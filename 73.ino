@@ -34,6 +34,7 @@ void tlg(int sl, int sr, float targetAngle);
 void trg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
          int correctSpeed);
 void trg(int sl, int sr, float targetAngle);
+void motorTest();
 
 void getSensor() {
   s0 = analog(0); // ตาซ้ายสุด (นอก)
@@ -43,7 +44,8 @@ void getSensor() {
 }
 
 void setup() {
-  XIO();       // คำสั่งเริ่มต้นระบบของ ATX2
+  XIO(); // คำสั่งเริ่มต้นระบบของ ATX2
+  // กดปุ่ม OK ค้างไว้ตอนเริ่มทำงาน เพื่อเข้าโหมดทดสอบมอเตอร์
   glcdClear(); // รีเซ็ตหน้าจอ
   Serial.begin(9600);
   Serial1.begin(115200);   // เริ่มต้น Serial1 สำหรับคุยกับ IMU
@@ -51,13 +53,74 @@ void setup() {
   servo(1, 55);            // รีเซ้ตค่าที่ปัดลูกบาศเป็นค่าเริ่มต้น
   // showSensorValues(true); // วัดค่าแสง
   OK();
+  // motorTest();
+
   beep();     // ส่งเสียงบี๊บยืนยันการกด
   delay(500); // รอก่อนวิ่ง
   zeroYaw();
   resetContinuousYaw(); // รีเซ็ต pvYawContinuous เป็น 0
 
+  /*
+  FdTimeG(50, 50, 500, 1, false, false);
+  tlg(70, 70, 90, 0.60, 30, 30);
+  // OK();
+  FdTimeG(50, 50, 400, 1, false, false);
+  FdUntilLineG(30, 30, 1);
+  FdTimeG(-30, -30, 300, 1);
+  delay(100);
+  tlg(50, 50, 90, 0.60, 30, 30);
+  FdTimeG(50, 50, 300, 0);
+  FdUntilLineG(30, 30, 1);
+  FdTimeG(-30, -30, 300, 1);
+  delay(100);
+  trg(40, 40, 90, 0.70, 30, 30);
+  FdTimeG(50, 50, 400, 1);
+  trg(40, 40, 100, 0.60, 30, 30);
+  FdTimeG(50, 50, 150, 0);
+  FdUntilLineG(30, 30, 1);
+  servoDrop(160, 500, 55);
+  FdTimeG(-100, -100, 50, 1, false, false);
+  */
+
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-50, -50, 350, 1);
+  // delay(100);
+  // trg(50, 50, 90, 0.60, 30, 30);
+
+  // FdTime(70, 70, 100, 0);
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-50, -50, 100, 1, false, false);
+  // tlg(100, 100, 90, 0.20, 20, 20);
+  // delay(100);
+  // FdTimeG(100, 100, 500, 1);
+  // delay(100);
+  // trg(100, 100, 80, 0.20, 20, 20);
+  // FdTimeG(50, 50, 100, 0);
+  // FdUntilLineG(30, 30, 1);
+  // servoDrop(160, 500, 55);
+  // FdTimeG(-50, -50, 200, 1, false, false);
+  // tlg(100, 100, 90, 0.20, 20, 20);
+  // FdTimeG(40, 40, 150, 0);
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-50, -50, 100, 1, false, false);
+  // trg(100, 100, 80, 0.20, 20, 20);
+  // FdUntilLineG(30, 30, 1);
+  // servoDrop(160, 500, 55);
+  // FdTimeG(-50, -50, 300, 1, false, false);
+  // trg(100, 100, 90, 0.20, 20, 20);
+  // FdTimeG(50, 50, 150, 0);
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-50, -50, 100, 1, false, false);
+  // trg(100, 100, 90, 0.20, 20, 20);
+  // FdTimeG(50, 50, 150, 0);
+  // FdUntilLineG(30, 30, 1);
+  // FdTimeG(-50, -50, 100, 1, false, false);
+  // trg(100, 100, 90, 0.20, 20, 20);
+  // FdTimeG(80, 80, 300, 0);
+  // FdUntilLineG(30, 30, 1);
+
   // FdTimeG(50, 50, 1000, 1, false, false);
-  tlg(50, 50, 90, 0.70, 30, 30);
+  // tlg(50, 50, 90, 0.70, 30, 30);
 
   // --- ใช้งานโค้ดส่วนด้านล่างนี้ ---
 
@@ -144,13 +207,15 @@ void setup() {
        -> สั่งให้หุ่นยนต์ "หยุดรอ" 0.5 วินาที
      - showSensorValues(true);
        -> ใช้ "เช็คค่าแสง" ที่หน้าจอ (ดูค่าพื้นขาว/เส้นดำ)
+    - motorTest();
+      -> ใช้ "ทดสอบมอเตอร์"
 
   *หมายเหตุ:
    - "หยุดไหม" -> ใส่ 1 คือหยุดเบรกทันที, ใส่ 0 คือปล่อยให้ไหล
    - "ซ้าย, ขวา" -> คือความเร็วมอเตอร์ (แนะนำที่ 30 ถึง 80)
   ========================================================================
   */
-  delay(300);
+  delay(1000);
 }
 
 void loop() {
@@ -472,8 +537,13 @@ void FdUntilLineG(int sl, int sr, int sp) {
   delay(50);
 
   bool alignmentMode = false;
+  unsigned long loopStart = millis(); // จับเวลา timeout
 
   while (1) {
+    if (millis() - loopStart > 10000) { // ถ้าเคิน 10 วินาทีให้หยุดเลย
+      break;
+    }
+
     getSensor();
     int correction = gyroCorrection();
 
@@ -504,7 +574,11 @@ void FdUntilLineG(int sl, int sr, int sp) {
         motor(3, -30);
         motor(4, -30);
       } else {
-        motor_stop(ALL);
+        // กรณีหลุดเส้นในขณะปรับจูน (เช่นเลยเส้นไปแล้ว) ให้ถอยหลัง
+        motor(1, -25);
+        motor(2, -25);
+        motor(3, -25);
+        motor(4, -25);
       }
     } else {
       // ยังไม่เจอเส้นหลัก วิ่งตามไลน์ปกติพร้อมไจโรชดเชย
@@ -797,4 +871,49 @@ void trg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
 void trg(int sl, int sr, float targetAngle) {
   trg(sl, sr, targetAngle, 0.7, 20,
       15); // slowPct=70%, slowSpeed=20, correctSpeed=15
+}
+
+// --- ฟังก์ชันทดสอบมอเตอร์ (Motor Test) ---
+void motorTest() {
+  glcdClear();
+  setTextSize(2);
+  glcd(1, 1, "MOTOR TEST");
+  delay(1000); // รอสักครู่
+
+  // 1. เดินหน้า
+  beep();
+  glcdClear();
+  glcd(2, 2, "FORWARD");
+  FdTime(50, 50, 1000, 1, false, false);
+  delay(500);
+
+  // 2. ถอยหลัง
+  beep();
+  glcdClear();
+  glcd(2, 2, "BACKWARD");
+  FdTime(-50, -50, 1000, 1, false, false);
+  delay(500);
+
+  // 3. เลี้ยวซ้าย
+  beep();
+  glcdClear();
+  glcd(2, 1, "TURN LEFT");
+  tl(50, 50, 1000);
+  delay(500);
+
+  // 4. เลี้ยวขวา
+  beep();
+  glcdClear();
+  glcd(2, 1, "TURN RIGHT");
+  tr(50, 50, 1000);
+  delay(500);
+
+  // จบการทำงาน
+  beep();
+  beep();
+  glcdClear();
+  glcd(2, 1, "TEST DONE");
+  while (true) {
+    // วนลูปหยุดรอตรงนี้ ไม่ไปต่อ
+  }
 }
