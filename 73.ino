@@ -56,7 +56,8 @@ void setup() {
   zeroYaw();
   resetContinuousYaw(); // รีเซ็ต pvYawContinuous เป็น 0
 
-  FdTimeG(50, 50, 1000, 1, false, false);
+  // FdTimeG(50, 50, 1000, 1, false, false);
+  tlg(50, 50, 90, 0.70, 30, 30);
 
   // --- ใช้งานโค้ดส่วนด้านล่างนี้ ---
 
