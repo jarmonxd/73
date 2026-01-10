@@ -35,6 +35,7 @@ void trg(int sl, int sr, float targetAngle, float slowPct, int slowSpeed,
          int correctSpeed);
 void trg(int sl, int sr, float targetAngle);
 void motorTest();
+void FdUntilLineGBeta(int sl, int sr, int sp);
 
 void getSensor() {
   s0 = analog(0); // ตาซ้ายสุด (นอก)
@@ -81,6 +82,7 @@ void setup() {
   servoDrop(160, 500, 55);
   FdTimeG(-100, -100, 50, 1, false, false);
   */
+  FdUntilLineGBeta(30, 30, 1);
 
   // FdUntilLineG(30, 30, 1);
   // FdTimeG(-50, -50, 350, 1);
@@ -191,6 +193,9 @@ void setup() {
        -> เดินหน้าไปเรื่อยๆ จนกว่า "ตาหน้าจะเจอเส้นดำ" แล้วหยุด
      - FdUntilLineG(30, 30, 1);
        -> เดินหน้าไปหาเส้น "แบบใช้ไจโรประคองตัวให้ตรงตลอดทาง"
+     - FdUntilLineGBeta(30, 30, 1);
+       -> เดินหน้าไปหาเส้นแบบใช้ไจโร
+  สําหรับใช้ในความเร็วสูงเพราะเมื่อถึงเส้นจะถอยหลังออกมาก่อนแล้วค่อยกลับเข้าไป ป้องกันการเลยเส้น
 
   2. การเลี้ยว (tl = Turn Left, tr = Turn Right)
      - tlg(50, 50, 90);
@@ -506,7 +511,7 @@ void FdTimeG(int sl, int sr, int time, int sp, bool checkSen0, bool checkSen3) {
       motor(2, -30);
       motor(3, 30);
       motor(4, 30);
-      delay(150);
+      delay(100);
       zeroYaw(); // รีเซ็ตไจโรหลังเลี้ยว
     } else if (checkSen0 && s0 < ref0) {
       // ถ้า a0 เจอ เลี่ยงไปด้านซ้าย
@@ -514,7 +519,7 @@ void FdTimeG(int sl, int sr, int time, int sp, bool checkSen0, bool checkSen3) {
       motor(2, 30);
       motor(3, -30);
       motor(4, -30);
-      delay(150);
+      delay(100);
       zeroYaw(); // รีเซ็ตไจโรหลังเลี้ยว
     } else {
       // วิ่งตรงพร้อมชดเชยไจโร
@@ -608,6 +613,141 @@ void FdUntilLineG(int sl, int sr, int sp) {
   if (sp == 1) {
     motor_stop(ALL);
   }
+}
+
+// FdUntilLineGBeta: เดินหน้าจนเจอเส้น แล้วถอยหลังตั้งหลักก่อนเข้าเส้นช้าๆ
+void FdUntilLineGBeta(int sl, int sr, int sp) {
+  zeroYaw();
+  delay(50);
+
+  unsigned long startTime = millis();
+  bool found = false;
+
+  // Phase 1: Go until line detected
+  while (1) {
+    if (millis() - startTime > 10000)
+      break; // 10s timeout
+    getSensor();
+    int correction = gyroCorrection();
+    int adjSl = sl + correction;
+    int adjSr = sr - correction;
+
+    // Check line
+    if (s1 < ref1 || s2 < ref2) {
+      found = true;
+      break;
+    }
+
+    // Side sensors tracking
+    if (s3 < ref3) {
+      motor(1, -25);
+      motor(2, -25);
+      motor(3, 25);
+      motor(4, 25);
+      delay(50);
+      zeroYaw();
+    } else if (s0 < ref0) {
+      motor(1, 25);
+      motor(2, 25);
+      motor(3, -25);
+      motor(4, -25);
+      delay(50);
+      zeroYaw();
+    } else {
+      motor(1, adjSr);
+      motor(2, adjSr);
+      motor(3, adjSl);
+      motor(4, adjSl);
+    }
+  }
+
+  if (!found) {
+    if (sp)
+      motor_stop(ALL);
+    return;
+  }
+
+  motor_stop(ALL);
+  delay(100);
+
+  // Extra Phase: If overshot (sensors see white), reverse until line found
+  // again
+  getSensor();
+  if (s1 > ref1 && s2 > ref2) {
+    unsigned long recoverStart = millis();
+    while (1) {
+      if (millis() - recoverStart > 3000)
+        break; // Timeout
+      getSensor();
+      if (s1 < ref1 || s2 < ref2) {
+        break; // Found line again
+      }
+      motor(1, -25);
+      motor(2, -25);
+      motor(3, -25);
+      motor(4, -25);
+    }
+  }
+
+  // Phase 2: Reverse until NOT found (s1 and s2 are white)
+  unsigned long revStart = millis();
+  while (1) {
+    if (millis() - revStart > 3000)
+      break; // 3s timeout
+    getSensor();
+    if (s1 > ref1 && s2 > ref2) {
+      break; // All white
+    }
+    motor(1, -25);
+    motor(2, -25);
+
+    motor(3, -25);
+    motor(4, -25);
+  }
+  // ถอยต่ออีกนิดนึงเพื่อให้ระยะห่างจากเส้นชัวร์ขึ้น
+  motor(1, -25);
+  motor(2, -25);
+  motor(3, -25);
+  motor(4, -25);
+  delay(200);
+
+  motor_stop(ALL);
+  delay(100);
+
+  // Phase 3: Approach slowly and align
+  unsigned long alignStart = millis();
+  while (1) {
+    if (millis() - alignStart > 5000)
+      break; // 5s timeout
+    getSensor();
+
+    // Stop if both found
+    if (s1 < ref1 && s2 < ref2) {
+      break;
+    }
+
+    // Slow align
+    if (s1 < ref1) { // Left found
+      motor(1, -20);
+      motor(2, -20);
+      motor(3, 20);
+      motor(4, 20);
+    } else if (s2 < ref2) { // Right found
+      motor(1, 20);
+      motor(2, 20);
+      motor(3, -20);
+      motor(4, -20);
+    } else {
+      // Forward Slow
+      motor(1, 20);
+      motor(2, 20);
+      motor(3, 20);
+      motor(4, 20);
+    }
+  }
+
+  if (sp)
+    motor_stop(ALL);
 }
 
 // tlg: หมุนซ้ายโดยใช้ไจโรตรวจสอบมุม (ใช้ Continuous Yaw - รองรับมุมเกิน 180°)
